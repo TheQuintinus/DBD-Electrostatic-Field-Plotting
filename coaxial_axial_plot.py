@@ -3,22 +3,28 @@ import math
 import numpy as np
 import pyvista as pv
 
+MATRICULA = 202210504463
+
 # ------------------------------------------------------------
 # Parâmetros físicos
 # ------------------------------------------------------------
-e_0 = 8.854 * 10 ** -12
-e_g = e_0
-e_d = 5 * e_0
+eps_0 = 8.854e-12
+eps_g = eps_0
+eps_d = 5 * eps_0
 
-r_a = 13.5 * 10 ** -2
-r_d = 14.8 * 10 ** -2
-r_b = 18 * 10 ** -2
+r_a = 13.5e-3
+r_d = 14.8e-3
+r_b = 18e-3
 
-geometric_factor = e_g / (e_g * math.log(r_d / r_a) + e_d * math.log(r_b / r_d))
+L = 20e-2
 
-V_0 = 10 * 10 ** 3
-L = 4
-R = 1
+V_0 = 10e3
+
+geometric_factor = eps_g / (
+    eps_g * math.log(r_d / r_a)
+    +
+    eps_d * math.log(r_b / r_d)
+)
 
 # ------------------------------------------------------------
 # Geometria do cilindro
