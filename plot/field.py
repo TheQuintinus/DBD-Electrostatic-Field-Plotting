@@ -25,6 +25,9 @@ class Field:
     coords = cylinder.CoaxialCylinder(r_a, r_b, L)
 
     def calculate_field(self):
+        """
+        Compute electric field and return Cartesian vectors.
+        """
         r, z = self.coords.coordinates
 
         # ------------------------------------------------------------

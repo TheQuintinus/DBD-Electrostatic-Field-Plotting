@@ -8,9 +8,9 @@ import field
 
 
 class Plot:
-    # ------------------------------------------------------------
-    # Plot com tamanho de seta constante
-    # ------------------------------------------------------------
+    """
+    Plot com tamanho de seta constante
+    """
 
     def __init__(self, glyph_size=2e-3):
         self.glyph_size = glyph_size

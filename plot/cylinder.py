@@ -59,6 +59,15 @@ class CoaxialCylinder:
         return r, z
 
     def to_cartesian(self, Er: np.typing.NDArray, Ez: np.typing.NDArray):
+        """
+        Convert cylindrical field components (Er, Ez) defined at self.points
+        into Cartesian vectors.
+
+        Parameters
+        ----------
+        Er, Ez : arrays of shape (N,)
+            Field components aligned with self.points ordering.
+        """
         x, y, z = self.points
 
         r_cyl = np.sqrt(x**2 + y**2)
