@@ -28,27 +28,32 @@ class Field:
         """
         Compute electric field and return Cartesian vectors.
         """
-        r, z = self.coords.coordinates
+        r_safe, z = self.coords.coordinates
 
-        # ------------------------------------------------------------
-        # Cálculo de E_r(r,z) e E_z(r, z)
-        # ------------------------------------------------------------
+        r_safe = np.maximum(r_safe, 1e-15)
+
         half_L = self.L / 2
 
-        term1 = (z + half_L) / np.sqrt(r**2 + (z + half_L) ** 2)
-        term2 = (z - half_L) / np.sqrt(r**2 + (z - half_L) ** 2)
+        term1 = (z + half_L) / np.sqrt(r_safe**2 + (z + half_L) ** 2)
+        term2 = (z - half_L) / np.sqrt(r_safe**2 + (z - half_L) ** 2)
 
-        axial_correction_factor = (term1 - term2) / 2
+        axial_factor = (term1 - term2) / 2
 
-        Er = self.V_0 * self.geometric_factor / r * axial_correction_factor
+        Er = self.V_0 * self.geometric_factor / r_safe * axial_factor
 
         Ez = (
             self.V_0
             * self.geometric_factor
             * (
-                1 / np.sqrt(r**2 + (z - half_L) ** 2)
-                - 1 / np.sqrt(r**2 + (z + half_L) ** 2)
+                1 / np.sqrt(r_safe**2 + (z - half_L) ** 2)
+                - 1 / np.sqrt(r_safe**2 + (z + half_L) ** 2)
             )
         )
 
-        return self.coords.to_cartesian(Er, Ez)
+        mask_diel = r_safe >= self.r_d
+        factor_diel = self.eps_d / self.eps_g
+
+        Er_diel = np.where(mask_diel, Er * factor_diel, Er)
+        Ez_diel = np.where(mask_diel, Ez * factor_diel, Ez)
+
+        return self.coords.to_cartesian(Er_diel, Ez_diel)
