@@ -1,3 +1,8 @@
+"""
+Author: oQuintino
+Description: Coaxial cylinder electric field plotting.
+"""
+
 import numpy as np
 
 import cylinder
