@@ -53,6 +53,16 @@ class Plot:
             scalar_bar_args={"title": "|E| [V/m]"},
         )
 
+        error = self.field.mean_radial_error() * 100
+
+        self.plotter.add_text(
+            f"Mean radial error:\n{error:.3f} %",
+            position=(0.02, 0.9),
+            viewport=True,
+            font_size=12,
+            color="black",
+        )
+
         AXIS_LENGTH = 101e-3  # L / 2 + delta
 
         x_axis = pv.Line((-AXIS_LENGTH, 0, 0), (AXIS_LENGTH, 0, 0))
