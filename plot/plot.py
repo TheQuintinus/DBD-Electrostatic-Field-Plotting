@@ -1,3 +1,4 @@
+import numpy as np
 import pyvista as pv
 
 import field
@@ -63,11 +64,12 @@ class Plot:
             color="black",
         )
 
-        AXIS_LENGTH = 101e-3  # L / 2 + delta
+        # Outermost extent of the computed geometry or field
+        axis_length = float(np.max(np.linalg.norm(points, axis=1)))
 
-        x_axis = pv.Line((-AXIS_LENGTH, 0, 0), (AXIS_LENGTH, 0, 0))
-        y_axis = pv.Line((0, -AXIS_LENGTH, 0), (0, AXIS_LENGTH, 0))
-        z_axis = pv.Line((0, 0, -AXIS_LENGTH), (0, 0, AXIS_LENGTH))
+        x_axis = pv.Line((-axis_length, 0, 0), (axis_length, 0, 0))
+        y_axis = pv.Line((0, -axis_length, 0), (0, axis_length, 0))
+        z_axis = pv.Line((0, 0, -axis_length), (0, 0, axis_length))
 
         self.plotter.add_mesh(
             x_axis, color="red", line_width=self.LINE_WIDTH, name="x_axis"
