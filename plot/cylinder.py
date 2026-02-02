@@ -14,6 +14,19 @@ from numpy.typing import NDArray
 
 
 class CartesianField(NamedTuple):
+    """
+    Container for a vector field represented in Cartesian coordinates.
+
+    Attributes
+    ----------
+    points : ndarray of shape (N, 3)
+        Cartesian coordinates of the field evaluation points.
+    vectors_unit : ndarray of shape (N, 3)
+        Unit vectors representing the field direction at each point.
+    magnitude : ndarray of shape (N,)
+        Field magnitude at each point.
+    """
+
     points: NDArray[float64]
     vectors_unit: NDArray[float64]
     magnitude: NDArray[float64]
@@ -151,12 +164,8 @@ class CoaxialCylinder:
 
         Returns
         -------
-        points : ndarray of shape (N, 3)
-            Cartesian coordinates of the grid points.
-        vectors_unit : ndarray of shape (N, 3)
-            Unit Cartesian field vectors.
-        mag : ndarray of shape (N,)
-            Magnitude of the field vectors.
+        CartesianField
+            Named tuple containing (points, vectors_unit, magnitude).
         """
 
         x, y, z = self.points

@@ -14,6 +14,15 @@ import cylinder
 
 
 class Region(IntEnum):
+    """
+    Physical regions of the coaxial structure.
+
+    DIELECTRIC
+        Dielectric layer between the conductors.
+    GAS
+        Gas region inside the coaxial cylinder.
+    """
+
     GAS = auto()
     DIELECTRIC = auto()
 
@@ -64,12 +73,9 @@ class DielectricField:
 
         Returns
         -------
-        points : ndarray of shape (N, 3)
-            Cartesian coordinates of the evaluation points.
-        vectors_unit : ndarray of shape (N, 3)
-            Unit electric field vectors in Cartesian coordinates.
-        mag : ndarray of shape (N,)
-            Magnitude of the electric field [V/m].
+        CartesianField
+            Cartesian representation of the electric field evaluated on the
+            cylindrical grid.
         """
 
         r, z = self.coords.rz_coordinates
