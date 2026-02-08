@@ -11,43 +11,47 @@ import pyvista as pv
 from field import DielectricField, Region
 
 
-class Plot:
+class PlotBuilder:
     """
-    PyVista plot of the electric field using fixed-size glyphs and magnitude-based coloring.
+    Builder class for PyVista-based visualization of an electric field.
+
+    This class encapsulates the logic required to construct a 3D plot
+    of the electric field in a coaxial dielectric geometry, including
+    vector glyphs, region-specific coloring, coordinate axes, and
+    diagnostic text overlays.
     """
 
     LINE_WIDTH = 1
+    """Line width used for rendering coordinate axes."""
 
     def __init__(self, glyph_size=1e-3):
         """
-        Initialize the PyVista plotter and field model.
+        Initialize the plot builder.
 
         Parameters
         ----------
         glyph_size : float, optional
-            Length of the glyphs representing the electric field vectors.
-            The glyph size is fixed and does not scale with field magnitude.
+            Fixed length of the glyphs representing electric field vectors.
+            The glyph size does not scale with field magnitude.
         """
 
         self.glyph_size = glyph_size
         self.field = DielectricField()
         self.plotter = pv.Plotter()
 
-    def show(self):
+    def add_glyphs(self):
         """
-        Render the electric field visualization.
+        Add electric field glyphs to the plot.
 
-        The method computes the electric field, creates a point cloud,
-        attaches vector and magnitude data, and renders oriented glyphs
-        colored by field magnitude.
+        This method computes the electric field, constructs a point cloud,
+        attaches vector, magnitude, and region data, and renders oriented
+        glyphs with fixed size.
 
-        Returns
-        -------
-        None
+        Glyphs are colored by field magnitude using distinct colormaps
+        for each physical region (gas and dielectric).
         """
 
         points, vectors_unit, mag = self.field.calculate_field()
-
         regions = self.field.regions()
 
         cloud = pv.PolyData(points)
@@ -79,18 +83,21 @@ class Plot:
             scalar_bar_args={"title": "|E| DIELECTRIC [V/m]"},
         )
 
-        error = self.field.mean_radial_error() * 100
+    def add_axes(self):
+        """
+        Add Cartesian reference axes to the plot.
 
-        self.plotter.add_text(
-            f"Mean radial error:\n{error:.3f} %",
-            position=(0.02, 0.9),
-            viewport=True,
-            font_size=12,
-            color="black",
+        The axes are centered at the origin and extend symmetrically
+        based on the current bounds of the plotted geometry or data.
+        Colors follow the convention:
+        x-axis (red), y-axis (green), z-axis (blue).
+        """
+
+        xmin, xmax, ymin, ymax, zmin, zmax = self.plotter.bounds
+
+        axis_length = max(
+            abs(xmin), abs(xmax), abs(ymin), abs(ymax), abs(zmin), abs(zmax)
         )
-
-        # Outermost extent of the computed geometry or field
-        axis_length = float(np.max(np.linalg.norm(points, axis=1)))
 
         x_axis = pv.Line((-axis_length, 0, 0), (axis_length, 0, 0))
         y_axis = pv.Line((0, -axis_length, 0), (0, axis_length, 0))
@@ -107,4 +114,28 @@ class Plot:
         )
 
         pv.Plotter.add_axes(self.plotter)
+
+    def add_error_text(self):
+        """
+        Add a diagnostic text overlay with the mean radial error.
+
+        The error is displayed as a percentage and positioned
+        in viewport coordinates, independent of camera movement.
+        """
+
+        error = self.field.mean_radial_error() * 100
+
+        self.plotter.add_text(
+            f"Mean radial error:\n{error:.3f} %",
+            position=(0.02, 0.9),
+            viewport=True,
+            font_size=12,
+            color="black",
+        )
+
+    def show(self):
+        """
+        Render the visualization and start the interactive PyVista window.
+        """
+
         self.plotter.show()
