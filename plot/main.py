@@ -1,6 +1,7 @@
 import plot
 
-if __name__ == "__main__":
+
+def main():
     plt = plot.PlotBuilder()
 
     plt.add_error_text()
@@ -8,3 +9,7 @@ if __name__ == "__main__":
     plt.add_axes()
 
     plt.show()
+
+
+if __name__ == "__main__":
+    main()
