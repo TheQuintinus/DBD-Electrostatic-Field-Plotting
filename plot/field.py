@@ -87,21 +87,19 @@ class DielectricField:
 
         half_L = self.L / 2
 
-        term1 = (z + half_L) / np.sqrt(r_safe**2 + (z + half_L) ** 2)
-        term2 = (z - half_L) / np.sqrt(r_safe**2 + (z - half_L) ** 2)
+        zp = z + half_L
+        zm = z - half_L
+
+        rp = np.hypot(r_safe, zp)
+        rm = np.hypot(r_safe, zm)
+
+        term1 = zp / rp
+        term2 = zm / rm
 
         axial_factor = (term1 - term2) / 2
 
-        Er = self.V_0 * self.geometric_factor / r_safe * axial_factor
-
-        Ez = (
-            self.V_0
-            * self.geometric_factor
-            * (
-                1 / np.sqrt(r_safe**2 + (z - half_L) ** 2)
-                - 1 / np.sqrt(r_safe**2 + (z + half_L) ** 2)
-            )
-        )
+        Er = self.V_0 * self.geometric_factor * axial_factor / r_safe
+        Ez = self.V_0 * self.geometric_factor * (1 / rm - 1 / rp)
 
         # Dielectric correction (field scaling by permittivity ratio)
         mask_diel = (r >= self.r_d) & (r <= self.r_b)

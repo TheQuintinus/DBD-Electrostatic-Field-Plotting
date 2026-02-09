@@ -143,7 +143,7 @@ class CoaxialCylinder:
 
         x, y, z = self.points
 
-        r: NDArray[float64] = np.sqrt(x**2 + y**2)
+        r: NDArray[float64] = np.hypot(x, y)
 
         return r, z
 
@@ -170,7 +170,7 @@ class CoaxialCylinder:
 
         x, y, z = self.points
 
-        r = np.sqrt(x**2 + y**2)
+        r = np.hypot(x, y)
 
         if Er.shape != Ez.shape or Er.shape != r.shape:
             raise ValueError("Er and Ez must match the number of grid points.")
