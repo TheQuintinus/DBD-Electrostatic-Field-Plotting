@@ -93,11 +93,7 @@ class PlotBuilder:
         x-axis (red), y-axis (green), z-axis (blue).
         """
 
-        xmin, xmax, ymin, ymax, zmin, zmax = self.plotter.bounds
-
-        axis_length = max(
-            abs(xmin), abs(xmax), abs(ymin), abs(ymax), abs(zmin), abs(zmax)
-        )
+        axis_length = np.max(np.abs(self.plotter.bounds))
 
         x_axis = pv.Line((-axis_length, 0, 0), (axis_length, 0, 0))
         y_axis = pv.Line((0, -axis_length, 0), (0, axis_length, 0))
